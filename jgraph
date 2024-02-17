@@ -1,16 +1,30 @@
 #!/bin/sh
 
-jls jid parent name | \
-        awk 'BEGIN {
+collectusage() {
+    ps -aefx -o pid= -o jid= -o pcpu= | \
+        awk '($1 != 11){ sum[$2] += $3; } END{ for(j in sum){ printf("USAGE %-16d %d\n", j, sum[j]); }}'
+}
+
+( collectusage ; jls jid parent name ) | \
+	awk -v nproc=`nproc` 'BEGIN {
                print "digraph jails {\n    rankdir=\"LR\";";
-               print "    0 [label=\"global\", style=\"filled\", color=\"red\"];"
+	       print "    // Coloring for " nproc " processors";
+	       ncs = 9;
+	       cs = nproc*100 / ncs;
              }
 
-             {
-               print "    " $1 " [label=\"" $3 "\"];";
+             $1 != "USAGE" {
+	       usage = int(u[$1]);
+	       print "    " $1 " [label=\"" $3 " " usage "%\", style=\"filled\", color=\"/bugn9/" int(usage / cs)+1 "\"];";
                print "    " $2 " -> " $1 ";"
              }
 
+	     $1 == "USAGE" {
+	       u[$2] = $3;
+             }
+
              END {
+	       usage = int(u[0]);
+	       print "    " 0 " [label=\"global " usage "%\", style=\"filled\", color=\"/bugn9/" int(usage / cs)+1 "\"];";
                print "}"
              }'
