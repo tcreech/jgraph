@@ -2,7 +2,7 @@
 
 collectusage() {
     ps -aefx -o pid= -o jid= -o pcpu= | \
-        awk '($1 != 11){ sum[$2] += $3; } END{ for(j in sum){ printf("USAGE %-16d %d\n", j, sum[j]); }}'
+        awk '($1 != 11){ sum[$2] += $3; } END{ for(j in sum){ print "USAGE", j, sum[j]; }}'
 }
 
 ( collectusage ; jls jid parent name ) | \
