@@ -1,8 +1,9 @@
 FreeBSD supports hierarchical, nested jails.
-The `jgraph` tool uses the system `jls(8)` to build a simple Graphviz digraph.
 
-The output can be visualized in a "live" fashion with something like:
+The `jgraph` tool uses the system `jls(8)` to build a Graphviz digraph of this hierarchy.
+
+One use is to visualize the state of all jails in a live fashion:
 
 ```sh
-while true; do jgraph ; sleep 2 ; done | dot -Txlib
+while jgraph; do sleep 2 ; done | dot -Txlib
 ```
