@@ -1,0 +1,4 @@
+#!/bin/sh
+
+jls jid parent name | \
+	awk 'BEGIN { print "digraph jails {"; print "    0 [label=\"global\", style=\"filled\", color=\"red\"];" } { print "    " $1 " [label=\"" $3 "\"];"; print "    " $2 " -> " $1 ";" } END { print "}" }'
